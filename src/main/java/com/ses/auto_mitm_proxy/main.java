@@ -2,7 +2,7 @@ package com.ses.auto_mitm_proxy;
 
 
 import com.formdev.flatlaf.FlatDarkLaf;
-import com.ses.auto_mitm_proxy.ui.UI1;
+import com.ses.auto_mitm_proxy.ui.UI;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import javax.swing.UIManager;
@@ -21,7 +21,7 @@ public class main {
         
         // Pencereyi oluştur ve görünür hale getir
         java.awt.EventQueue.invokeLater(() -> {
-            UI1 ui = new UI1();
+            UI ui = new UI();
             ui.setVisible(true);
             
             ui.addWindowListener(new WindowAdapter() {

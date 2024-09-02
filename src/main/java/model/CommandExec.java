@@ -65,31 +65,27 @@ public class CommandExec extends Thread {
     }
     
     public void exec() {
-        
-        if (!"".equals(rootPass) && rootPass != null){
+
+        if (!"".equals(rootPass) && rootPass != null) {
             command = "echo " + rootPass + " | sudo -S " + command;
         }
-        
+
         try {
             // ProcessBuilder kullanarak komutu çalıştır
-            ProcessBuilder processBuilder = new ProcessBuilder();
-            processBuilder.command("bash", "-c", command);
+            ProcessBuilder processBuilder = new ProcessBuilder("bash", "-c", command);
+            processBuilder.redirectErrorStream(true);  // Hata akışını standart akışa yönlendir
 
             // Komutu çalıştır ve sonucu al
             process = processBuilder.start();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (dataListener != null) {
-                    dataListener.onOutput(line);
+            // Çıktıyı oku
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (dataListener != null) {
+                        dataListener.onOutput(line);
+                    }
                 }
-            }
-
-            // Hata akışını kontrol et
-            BufferedReader errorReader = new BufferedReader(new InputStreamReader(process.getErrorStream()));
-            while ((line = errorReader.readLine()) != null) {
-                System.err.println(line); // Hata mesajlarını yazdır
             }
 
             int exitCode = process.waitFor(); // Komutun bitmesini bekle
@@ -99,4 +95,5 @@ public class CommandExec extends Thread {
             ErrorDialog.showError("Hata olustu");
         }
     }
+    
 }
